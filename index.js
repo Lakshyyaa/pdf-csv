@@ -93,7 +93,7 @@ for (let i = 0; i < 100; i++) {
             let inum
             let caddress1
             let cnumber
-            console.log('\n')
+            let str=''
             let caddress2
             let index = 0
             let dates = []
@@ -126,6 +126,9 @@ for (let i = 0; i < 100; i++) {
                 if (element.Text.includes("#")) {
                     inum = element.Text.split(" ")[1]
                 }
+                if(/^[a-z\s]+$/.test(element.Text)){
+                    s=s+element.Text
+                }
                 index++
             });
             let a, b, c
@@ -142,7 +145,7 @@ for (let i = 0; i < 100; i++) {
                     baddress: baddress, bzipcode: bzipcode, caddress1: caddress1,
                     caddress2: o, cemail: cemail, cname: cname,
                     cnumber: cnumber, iname: a, iquan: b,
-                    irate: c, idesc: o, idate: dates[0],
+                    irate: c, idesc: s, idate: dates[0],
                     iidate: dates[1], inum: inum, itax: itax
                 })
             }
