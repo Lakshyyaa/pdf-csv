@@ -88,30 +88,65 @@ for (let i = 0; i < 100; i++) {
             let itax = 10
             let s = ''
             let trnum = 1
+            let cemail
+            let cname
+            let inum
+            let caddress1
+            let cnumber
+            console.log('\n')
+            let caddress2
+            let index = 0
+            let dates = []
+            let x
+            let y
+            const arrayy = data.elements.filter((l) => l.Text !== undefined)
+            arrayy.forEach(element => {
+                console.log(element.Text)
+                if (element.Text.includes('AMOUNT')) {
+                    x = index + 1;
+                }
+                if (element.Text.includes('Subtotal')) {
+                    y = index;
+                }
+                if ((element.Text).match(/\b\d{2}-\d{2}-\d{4}\b/)) {
+                    let matched = (element.Text).match(/\b\d{2}-\d{2}-\d{4}\b/)[0]
+                    dates.push(matched)
+                }
+                if (/^\d{3}-\d{3}-\d{4}.*/.test(element.Text)) {
+                    cnumber = element.Text
+                }
+                if ((/^\d{3}\s+\w+/).test(element.Text)) {
+                    caddress1 = element.Text
+                    caddress2 = arrayy[index + 1].Text
+                }
+                if (element.Text.includes('@')) {
+                    cemail = (element.Text)
+                    cname = arrayy[index - 1].Text
+                }
+                if (element.Text.includes("#")) {
+                    inum = element.Text.split(" ")[1]
+                }
+                index++
+            });
             let a, b, c
-            data.elements.forEach(element => {
-                if (element.Path == '//Document/Sect/Table[3]/TR' + s + '/TD/P') {
-                    a = element.Text
-                }
-                else if (element.Path == '//Document/Sect/Table[3]/TR' + s + '/TD[' + 2 + ']/P') {
-                    b = element.Text
-                }
-                else if (element.Path == '//Document/Sect/Table[3]/TR' + s + '/TD[' + 3 + ']/P') {
-                    c = element.Text
-                    trnum++
-                    s = '[' + trnum + ']'
-                    let o = ''
-                    records.push({
-                        city: city, coun: coun, desc: desc, bname: bname,
-                        baddress: baddress, bzipcode: bzipcode, caddress1: o,
-                        caddress2: o, cemail: o, cname: o,
-                        cnumber: o, iname: a, iquan: b,
-                        irate: c, idesc: o, idate: o,
-                        iidate: o, inum: o, itax: itax
-                    })
-                }
+            while (x < y) {
+                a = arrayy[x].Text;
+                x++;
+                b = arrayy[x].Text
+                x++
+                c = arrayy[x].Text
+                x = x + 2
+                let o = ''
+                records.push({
+                    city: city, coun: coun, desc: desc, bname: bname,
+                    baddress: baddress, bzipcode: bzipcode, caddress1: caddress1,
+                    caddress2: o, cemail: cemail, cname: cname,
+                    cnumber: cnumber, iname: a, iquan: b,
+                    irate: c, idesc: o, idate: dates[0],
+                    iidate: dates[1], inum: inum, itax: itax
+                })
             }
-            );
+
             csvWriter.writeRecords(records)
                 .then(() => {
                     console.log('...Done');
